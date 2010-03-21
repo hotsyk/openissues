@@ -1,4 +1,18 @@
-﻿
+﻿Openissues - is a fork of the opentodo task management system designed to create simple open issue management system
+
+Main differences from the opentodo:
+ * Localizations
+ * Thread comments
+ * Estimates for the tasks
+ * Iterations and planning of the releases
+ * Task types
+ * Markdown instead of the cuted html
+ * Task workflow - possibility to define user as the project manager and all tasks will be returned to him instead of the task author after the finishing
+ * Scrum charts
+ * Actual time for the task tracking 
+ * Integration with the kava (@42cc project)
+
+
        opentodo - Система управления задачами на Django Framework
 
 
