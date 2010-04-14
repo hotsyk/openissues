@@ -9,11 +9,13 @@ from django import template
 
 register = template.Library()
 
-months = ('янв.','февр.','марта','апр.','мая','июня','июля','авг.','сент.','окт.','нояб.','дек.')
+months = ('янв.', 'февр.', 'марта', 'апр.', 'мая', 'июня', 'июля', 'авг.', 
+          'сент.', 'окт.', 'нояб.', 'дек.')
 
 """
     Форматирует дату срока задачи.
-    Дата в прошлом, сегодня или завтра помечается красным цветом (если задача не завершена).
+    Дата в прошлом, сегодня или завтра помечается красным цветом 
+    (если задача не завершена).
     Пример: dt|format_deadline:"1"
         где dt - переменная типа Date, 1 - статус задачи
 """
@@ -30,7 +32,8 @@ def format_deadline(dt, status):
 
 """
     Дата в формате '6 февр.' если год = текущему (иначе - в формате dd.mm.yyyy)
-    Если есть время, выводится также и оно (а если дата - сегодня, выводится только время)
+    Если есть время, выводится также и оно (а если дата - 
+    сегодня, выводится только время)
 """
 @register.filter
 def format_date(dt, option=""):
@@ -101,8 +104,10 @@ def username(user):
         return ""
 
 """
-    Вычисляет высоту дополнительной (нижней) строки в списке задач в зависимости от параметра - количества задач
-    (для того чтобы высота таблицы не была меньше высоты левого меню при небольшом количестве задач)
+    Вычисляет высоту дополнительной (нижней) строки в списке задач в 
+    зависимости от параметра - количества задач
+    (для того чтобы высота таблицы не была меньше высоты левого меню 
+    при небольшом количестве задач)
 """
 @register.filter
 def extra_td_height(tasks_count):
@@ -132,7 +137,8 @@ def crop(text, count):
 def filter_options(params, folder):
     out = ''
 
-    STATES_PLURAL = {1: u'Новые', 2: u'Принятые', 3: u'Завершенные', 4: u'Завершенные и одобренные'}
+    STATES_PLURAL = {1: u'Новые', 2: u'Принятые', 
+                     3: u'Завершенные', 4: u'Завершенные и одобренные'}
 
     author = assigned_to = status = search_title = ''
     if params.get('status', False):
@@ -190,7 +196,8 @@ def sanitize_html(value):
         return '<%s>%s</%s>' % (match.group(1), match.group(2), match.group(1))
 
     # Ссылки
-    href_re = re.compile(lt + '(a +href=")([^"]+)(" ?' + gt + ')' + '(.+?)' + lt + '/a' + gt, re.I)
+    href_re = re.compile(lt + '(a +href=")([^"]+)(" ?' + gt +\
+                          ')' + '(.+?)' + lt + '/a' + gt, re.I)
     value = href_re.sub(href_subber, value)
 
     # Другие разрешенные теги.
@@ -199,7 +206,8 @@ def sanitize_html(value):
         opt = re.I
         if tag == 'pre':
             opt =  re.I | re.S
-        tag_re = re.compile(lt + '(' + tag + ')' + gt + '(.*?)' + lt + '/' + tag + gt, opt)
+        tag_re = re.compile(lt + '(' + tag + ')' + gt + '(.*?)' +\
+                             lt + '/' + tag + gt, opt)
         value = tag_re.sub(tag_subber, value)
 
     for line in value.split("\n"):
@@ -213,11 +221,13 @@ def sanitize_html(value):
             # Выделяем цветом цитаты (если есть '>' в начале строки)
             match = re.search('(^' + gt + '.*)', line)
             if match:
-                line = '<span class="comment-quote">' + match.group(0) + '</span>'
+                line = '<span class="comment-quote">' +\
+                 match.group(0) + '</span>'
             out += line + "<br />"
         else:
             # внутри тега pre заменяем угловые скобки на коды
-            # это было сделано вначале, но затем была вставка разрешенных тегов, а они тут не нужны
+            # это было сделано вначале, но затем была вставка разрешенных 
+            #тегов, а они тут не нужны
             line = re.sub('<', lt, line)
             line = re.sub('>', gt, line)
             line = re.sub(lt + 'pre' + gt, '<pre>', line)

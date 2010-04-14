@@ -38,7 +38,8 @@ def uniqs(seq):
 
 # Отправка почты - обертка для EmailMessage
 def send_emails(subject, message, recipient_list):
-    msg = EmailMessage(subject, message, settings.EMAIL_ADDRESS_FROM, recipient_list)
+    msg = EmailMessage(subject, message, settings.EMAIL_ADDRESS_FROM, 
+                       recipient_list)
     msg.content_subtype = "html"
     msg.send(fail_silently=settings.EMAIL_FAIL_SILENTLY)
 
@@ -56,13 +57,18 @@ def make_upload_path(instance, filename):
 # Пользователи в проектах
 def users_in_projects(projects):
     users = User.objects.filter(
-            Q(avail_projects__in=projects) | Q(is_superuser=True)).distinct().order_by('first_name', 'last_name')
+            Q(avail_projects__in=projects) |\
+             Q(is_superuser=True)).distinct().order_by('first_name', 
+                                                       'last_name')
     return users
 
 #---------------------------------------------------
-# Модели
+# Models
 
-# Проекты
+
+# Projects
+
+
 class ProjectManager(models.Manager):
     # Проекты, доступные для пользователя
     def available_for(self, user):
@@ -75,8 +81,12 @@ class Project(models.Model):
     title = models.CharField("Проект", max_length=255)
     info = models.TextField("Описание", null=True, blank=True)
     created_at = models.DateTimeField("Дата добавления", auto_now_add=True)
-    author = models.ForeignKey(User, null=True, db_column='author', related_name="projects", verbose_name="Автор")
-    users = models.ManyToManyField(User, blank=True, null=True, verbose_name="Команда", related_name="avail_projects")
+    author = models.ForeignKey(User, null=True, db_column='author', 
+                               related_name="projects", verbose_name="Автор")
+    users = models.ManyToManyField(User, blank=True, null=True, 
+                                   verbose_name="Команда", 
+                                   related_name="avail_projects")
+    
     objects = ProjectManager()
 
     def __unicode__(self):
@@ -113,6 +123,14 @@ class Project(models.Model):
         verbose_name = "проект"
         verbose_name_plural = "проекты"
 
+
+class ProjectEstimate(models.Model):
+    project = models.ForeignKey(Project)
+    created_at = models.DateTimeField()
+    author = models.ForeignKey(User)
+    complexity = models.IntegerField(default=0)
+    
+    
 # Статусы задач
 class Status(models.Model):
     title = models.CharField("Статус", max_length=50)
@@ -121,15 +139,33 @@ class Status(models.Model):
 
 # Задачи
 class Task(models.Model):
-    project = models.ForeignKey(Project, verbose_name="Проект", related_name="related_tasks")
-    status = models.ForeignKey(Status, default=1, verbose_name="Статус")
-    author = models.ForeignKey(User, null=True, db_column='author', related_name="tasks", verbose_name="Автор")
-    assigned_to = models.ForeignKey(User, null=True, db_column='assigned_to', related_name="assigned_tasks", verbose_name="Ответственный")
-    created_at = models.DateTimeField("Дата добавления", auto_now_add=True)
+    TASK_TYPES = (
+                  (1, 'Task'),
+                  (2, 'Defect'),
+                  (3, 'Enhancement'),
+                  (4, 'Technical debt'),
+                  (5, 'Issue'),
+                  )
+    project = models.ForeignKey(Project, verbose_name="Проект", 
+                                related_name="related_tasks")
+    status = models.ForeignKey(Status, default=1, 
+                               verbose_name="Статус")
+    author = models.ForeignKey(User, null=True, db_column='author', 
+                               related_name="tasks", verbose_name="Автор")
+    assigned_to = models.ForeignKey(User, null=True, db_column='assigned_to', 
+                                    related_name="assigned_tasks", 
+                                    verbose_name="Ответственный")
+    created_at = models.DateTimeField("Дата добавления", 
+                                      auto_now_add=True)
     title =  models.CharField("Задача", max_length=255)
     info = models.TextField("Описание", null=True, blank=True)
     deadline = models.DateField("Срок", null=True, blank=True)
     has_deadline = models.BooleanField(default=0)
+    type = models.SmallIntegerField(choices=TASK_TYPES)
+    complexity = models.IntegerField(default=0)
+    gitrevision = models.CharField(max_length=255, blank=True, null=True)
+    
+    
     def __unicode__(self):
         return self.title
 
@@ -150,7 +186,8 @@ class Task(models.Model):
                 addr = self.author.email
         
             if addr:
-                send_emails('[opentodo] '+TASK_NOTIF_SUBJECTS[notif_id], msg_body, [addr])
+                send_emails('[opentodo] '+TASK_NOTIF_SUBJECTS[notif_id], 
+                            msg_body, [addr])
         
 # Комментарии к задачам
 class Comment(models.Model):
@@ -166,7 +203,8 @@ class Comment(models.Model):
     def mail_notify(self, host=''):
         if settings.SEND_EMAILS:
             tmpl = get_template('todo/mail/comment.html')
-            msg_body = tmpl.render( Context({'t':self.task, 'c':self, 'host':host}) )
+            msg_body = tmpl.render( Context({'t':self.task, 
+                                             'c':self, 'host':host}) )
             addrs = []
             if self.task.author.email:
                 addrs.append(self.task.author.email)
@@ -175,7 +213,8 @@ class Comment(models.Model):
             if self.reply_to and self.reply_to.author.email:
                 addrs.append(self.reply_to.author.email)
             if addrs:
-                send_emails('[opentodo] Комментарий к задаче', msg_body, uniqs(addrs))
+                send_emails('[opentodo] Комментарий к задаче', 
+                            msg_body, uniqs(addrs))
 
 # Абстрактный класс для файлов-вложений
 class CommonAttach(models.Model):
@@ -197,7 +236,8 @@ class TaskAttach(CommonAttach):
     def mail_notify(self, host=''):
         if settings.SEND_EMAILS:
             tmpl = get_template('todo/mail/file.html')
-            msg_body = tmpl.render( Context({'t':self.task, 'a':self, 'host':host}) )
+            msg_body = tmpl.render( Context({'t':self.task, 
+                                             'a':self, 'host':host}) )
             addrs = []
             if self.task.author.email:
                 addrs.append(self.task.author.email)
@@ -205,4 +245,5 @@ class TaskAttach(CommonAttach):
                 addrs.append(self.task.assigned_to.email)
             
             if addrs:
-                send_emails('[opentodo] Файл прикреплен к задаче', msg_body, uniqs(addrs))
+                send_emails('[opentodo] Файл прикреплен к задаче', 
+                            msg_body, uniqs(addrs))

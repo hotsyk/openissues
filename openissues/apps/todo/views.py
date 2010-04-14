@@ -11,7 +11,8 @@
 #------------------------------------------------------------
 
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpRequest, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseRedirect, Http404,\
+ HttpRequest, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, get_list_or_404
 from annoying.functions import get_object_or_None
 from annoying.decorators import render_to
@@ -28,7 +29,8 @@ def index(request):
     return HttpResponseRedirect(reverse('tasks_list'))
 
 # Список задач
-# Доступ: все - видят задачи проектов, участниками которых они являются; администраторы
+# Доступ: все - видят задачи проектов, участниками которых они являются; 
+#администраторы
 @login_required
 @render_to('todo/todo_list.html')
 def list(request, state=0):
@@ -54,7 +56,8 @@ def list(request, state=0):
             project = get_object_or_404(Project, pk=project_id)
         request.session['project_id'] = project_id
 
-    # Запоминаем в сессии группу задач (вх., исх., все) и сортировку, если передано в GET
+    # Запоминаем в сессии группу задач (вх., исх., все) и сортировку, 
+    #если передано в GET
     if request.GET.get('folder', False):
         request.session['folder'] = request.GET['folder']
     if request.GET.get('order', False):
@@ -62,8 +65,10 @@ def list(request, state=0):
     if request.GET.get('dir', False):
         request.session['dir'] = request.GET['dir']
 
-    # Если сменили группу задач либо настройки фильтра сброшены или изменены, удаляем существующие
-    if request.GET.get('folder', False) or (request.GET.get('filter', False) in ('on', 'off')):
+    # Если сменили группу задач либо настройки фильтра сброшены или 
+    #изменены, удаляем существующие
+    if request.GET.get('folder', False) or (request.GET.get('filter',\
+                                                     False) in ('on', 'off')):
         for key in ('author', 'assigned_to', 'status', 'search_title'):
             try:
                 del request.session[key]
@@ -111,7 +116,9 @@ def list(request, state=0):
         tasks = tasks.filter(author=request.user)
     
     # Доп. фильтр:
-    if (params.get('author', False) and not folder == 'outbox') or (params.get('assigned_to', False) and not folder == 'inbox') or params.get('status', False) or params.get('search_title', False):
+    if (params.get('author', False) and not folder == 'outbox') or\
+     (params.get('assigned_to', False) and not folder == 'inbox') or\
+      params.get('status', False) or params.get('search_title', False):
         filter_on = True
         # Автор
         if params.get('author', False) and not folder == 'outbox':
@@ -178,14 +185,18 @@ def list(request, state=0):
             tasks = tasks.order_by('status__id', '-created_at')
     elif order == 'assigned_to':
         if direct == 'desc':
-            tasks = tasks.order_by('-assigned_to__first_name', '-assigned_to__last_name', '-created_at')
+            tasks = tasks.order_by('-assigned_to__first_name',\
+                                    '-assigned_to__last_name', '-created_at')
         else:
-            tasks = tasks.order_by('assigned_to__first_name', 'assigned_to__last_name', '-created_at')
+            tasks = tasks.order_by('assigned_to__first_name',\
+                                    'assigned_to__last_name', '-created_at')
     elif order == 'author':
         if direct == 'desc':
-            tasks = tasks.order_by('-author__first_name', '-author__last_name', '-created_at')
+            tasks = tasks.order_by('-author__first_name',\
+                                    '-author__last_name', '-created_at')
         else:
-            tasks = tasks.order_by('author__first_name', 'author__last_name', '-created_at')
+            tasks = tasks.order_by('author__first_name',\
+                                    'author__last_name', '-created_at')
     else:
         order = 'created_at'
         direct = 'desc'
@@ -196,7 +207,11 @@ def list(request, state=0):
     page_num = int(request.GET.get('page', '1'))
     page = paginator.page(page_num)
 
-    return {'tasks': page.object_list, 'page': page, 'paginator': paginator, 'current_page': page_num, 'projects': projects, 'project': project, 'params': params, 'folder': folder, 'order': order, 'dir': direct, 'menu_active': 'tasks', 'users': users, 'states': states, 'filter_on': filter_on}
+    return {'tasks': page.object_list, 'page': page, 'paginator': paginator,\
+             'current_page': page_num, 'projects': projects,\
+              'project': project, 'params': params, 'folder': folder,\
+               'order': order, 'dir': direct, 'menu_active': 'tasks',\
+                'users': users, 'states': states, 'filter_on': filter_on}
 
 # Информация о задаче + загрузка файлов
 # Доступ: участники проекта, администраторы
@@ -214,17 +229,20 @@ def details(request, task_id):
     # Загрузка файлов
     task_attach = TaskAttach(task=task, author=request.user)
     if request.method == 'POST':
-        f = TaskAttachForm(request.POST, request.FILES, instance=task_attach)
+        f = TaskAttachForm(request.POST, request.FILES,\
+                            instance=task_attach)
         if f.is_valid():
             attach = f.save(commit = False)
             attach.save()
             attach.mail_notify(request.get_host())
 
-            return HttpResponseRedirect(reverse('task_details', args=(task_id,)))
+            return HttpResponseRedirect(reverse('task_details',\
+                                                 args=(task_id,)))
     else:
         f = TaskAttachForm(instance=task_attach)
 
-    return {'task': task, 'menu_active': 'tasks', 'attachments': attachments, 'f': f}
+    return {'task': task, 'menu_active': 'tasks',\
+             'attachments': attachments, 'f': f}
 
 # Редактирование задачи
 # Доступ: автор задачи, администраторы
@@ -237,7 +255,8 @@ def edit(request, task_id):
         return HttpResponseForbidden()
 
     author = get_object_or_None(User, id=task.author_id)
-    if not (request.user.has_perm('todo.change_task') or request.user == author):
+    if not (request.user.has_perm('todo.change_task') or\
+             request.user == author):
         return HttpResponseForbidden()
 
     if request.method == 'POST':
@@ -255,14 +274,16 @@ def edit(request, task_id):
             else:
                 t.assigned_to = None
             t.save()
-            return HttpResponseRedirect(reverse('task_details', args=(task_id,)))
+            return HttpResponseRedirect(reverse('task_details',\
+                                                 args=(task_id,)))
     else:
         f = TaskForm(request.user, instance = task)
     
     projects = Project.objects.available_for(request.user)
     users = users_in_projects(projects)
 
-    return {'form': f, 'task': task, 'users': users, 'menu_active': 'tasks'}
+    return {'form': f, 'task': task, 'users': users,\
+             'menu_active': 'tasks'}
 
 # Добавление задачи
 # Доступ: участники проекта, администраторы
@@ -271,7 +292,8 @@ def edit(request, task_id):
 def add_task(request):
     projects = Project.objects.available_for(request.user)
     if not projects:
-        return {'no_available_projects': True, 'menu_active': 'tasks', 'add': True}
+        return {'no_available_projects': True, 'menu_active': 'tasks',\
+                 'add': True}
 
     if request.method == 'POST':
         f = TaskForm(request.user, request.POST)
@@ -291,7 +313,8 @@ def add_task(request):
                 t.save()
                 t.mail_notify(request.get_host())
             
-            return HttpResponseRedirect(reverse('task_details', args=(t.id,)))
+            return HttpResponseRedirect(reverse('task_details',\
+                                                 args=(t.id,)))
     else:        
         init_data = {
             'project': request.session.get('project_id',''),
@@ -312,7 +335,8 @@ def delete(request, task_id):
         return HttpResponseForbidden()
 
     author = get_object_or_None(User, id=task.author_id)
-    if not (request.user.has_perm('todo.delete_task') or request.user == author):
+    if not (request.user.has_perm('todo.delete_task') or\
+             request.user == author):
         return HttpResponseForbidden()
 
     task.delete()
@@ -342,15 +366,18 @@ def project_details(request, project_id):
     # Загрузка файлов
     project_attach = ProjectAttach(project=project, author=request.user)
     if request.method == 'POST':
-        f = ProjectAttachForm(request.POST, request.FILES, instance=project_attach)
+        f = ProjectAttachForm(request.POST, request.FILES,\
+                               instance=project_attach)
         if f.is_valid():
             attach = f.save(commit = False)
             attach.save()
-            return HttpResponseRedirect(reverse('project_details', args=(project_id,)))
+            return HttpResponseRedirect(reverse('project_details',\
+                                                 args=(project_id,)))
     else:
         f = ProjectAttachForm(instance=project_attach)
 
-    return {'project':project, 'menu_active':'projects', 'attachments':attachments, 'f':f}
+    return {'project':project, 'menu_active':'projects',\
+             'attachments':attachments, 'f':f}
 
 # Удаление файла, прикрепленного к проекту
 # Доступ: автор файла, администраторы
@@ -362,11 +389,13 @@ def delete_project_attach(request, attach_id):
         return HttpResponseForbidden()
 
     author = get_object_or_None(User, id=attach.author_id)
-    if not (request.user.has_perm('todo.delete_projectattach') or request.user == author):
+    if not (request.user.has_perm('todo.delete_projectattach') or\
+             request.user == author):
         return HttpResponseForbidden()
 
     attach.delete()
-    return HttpResponseRedirect(reverse('project_details', args=(attach.project.id,)))
+    return HttpResponseRedirect(reverse('project_details',\
+                                         args=(attach.project.id,)))
     
 
 # Удаление файла, прикрепленного к задаче
@@ -379,11 +408,13 @@ def delete_task_attach(request, attach_id):
         return HttpResponseForbidden()
 
     author = get_object_or_None(User, id=attach.author_id)
-    if not (request.user.has_perm('todo.delete_taskattach') or request.user == author):
+    if not (request.user.has_perm('todo.delete_taskattach') or\
+             request.user == author):
         return HttpResponseForbidden()
 
     attach.delete()
-    return HttpResponseRedirect(reverse('task_details', args=(attach.task.id,)))
+    return HttpResponseRedirect(reverse('task_details',\
+                                         args=(attach.task.id,)))
 
 # Добавление проекта
 # Доступ: администраторы
@@ -422,7 +453,8 @@ def edit_project(request, project_id):
             p = f.save(commit = False)
             p.save()
             f.save_m2m()
-            return HttpResponseRedirect(reverse('project_details', args=(project_id,)))
+            return HttpResponseRedirect(reverse('project_details',\
+                                                 args=(project_id,)))
     else:
         f = ProjectForm(instance = project)
 
@@ -439,7 +471,8 @@ def delete_project(request, project_id):
         return HttpResponseForbidden()
 
     author = get_object_or_None(User, id=project.author_id)
-    if not (request.user.has_perm('todo.delete_project') or request.user == author):
+    if not (request.user.has_perm('todo.delete_project') or\
+             request.user == author):
         return HttpResponseForbidden()
 
     if project.tasks_count > 0:
@@ -535,7 +568,8 @@ def add_comment(request, task_id):
         comment.save()
         comment.mail_notify(request.get_host())
 
-    return HttpResponseRedirect(reverse('task_details', args=(task_id,)) + '#comment_form')
+    return HttpResponseRedirect(reverse('task_details',\
+                                         args=(task_id,)) + '#comment_form')
 
 # Удаление комментария к задаче
 # Доступ: автор комментария
@@ -547,15 +581,20 @@ def del_comment(request, comment_id):
     if not comment.task.project.is_avail(request.user):
         return HttpResponseForbidden()
 
-    if not (request.user.has_perm('todo.delete_comment') or request.user == author):
+    if not (request.user.has_perm('todo.delete_comment') or\
+             request.user == author):
         return HttpResponseForbidden()
     comment.delete()
-    return HttpResponseRedirect(reverse('task_details', args=(comment.task.id,)))
+    return HttpResponseRedirect(reverse('task_details',\
+                                         args=(comment.task.id,)))
 
 # Список пользователей, имеющих доступ к проекту, в формате JSON
-# Используется в форме задачи, подгружается в поле 'Ответственный' при выборе проекта.
-# Если выбран проект, то в списке пользователей - участники проекта, администраторы.
-# Если проект не выбран - участники всех проектов, к которым имеет доступ текущий пользователь; администраторы.
+# Используется в форме задачи, подгружается в поле 'Ответственный' 
+#при выборе проекта.
+# Если выбран проект, то в списке пользователей - участники проекта, 
+#администраторы.
+# Если проект не выбран - участники всех проектов, к которым имеет 
+#доступ текущий пользователь; администраторы.
 @login_required
 @render_to('todo/json_project_users.html')
 def json_project_users(request):
