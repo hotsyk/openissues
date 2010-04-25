@@ -1,15 +1,17 @@
 {% extends "todo.html" %}
+{% load i18n %}
 
 {% block extra_media %}{{form.media}}{% endblock %}
 
-{% block title %}{% if add %}Добавление задачи{% else %}Редактирование задачи "{{task}}"{% endif %}{% endblock %}
+{% block title %}{% if add %}{% trans "New task" %}{% else %}{% trans "Edit task" %} "{{task}}"{% endif %}{% endblock %}
 
 {% block content %}
 
-<h1>{% if add %}Добавление{% else %}Редактирование{% endif %} задачи</h1>
+<h1>{% if add %}{% trans "New" %}{% else %}{% trans "Edit" %}{% endif %} {% trans "task" %}</h1>
 
 {% if no_available_projects %}
-Нет проектов, в которые можно добавить задачу.<br />Обратитесь к администратору с просьбой включить вас в команду проекта.
+{% trans "You have no available projects for adding the task." %}<br />
+{% trans "Ask administrator to include you into the projects." %}
 {% else %}
 	{% include "todo/task_form.html" %}
 {% endif %}

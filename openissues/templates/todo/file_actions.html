@@ -1,4 +1,4 @@
-{% load todo_extras %}
+{% load todo_extras i18n %}
 
 {% ifequal menu_active 'tasks' %}
 <a href="javascript:if(confirm('Удалить файл {{a.attached_file.path|attach}}?')) location.href='{% url delete_task_attach a.id %}'" style="color:red;font-weight:normal"><img src="{{MEDIA_URL}}img/cross_small.gif" alt="" width="16" height="16" title="удалить" /></a>

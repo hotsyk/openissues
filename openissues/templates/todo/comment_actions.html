@@ -1,1 +1,2 @@
-<a href="javascript:if(confirm('Удалить комментарий?')) location.href='{% url del_comment comment.id %}'"><img src="{{MEDIA_URL}}img/cross_small.gif" style="vertical-align:middle" alt="" width="16" height="16" title="удалить" /></a>
+{% load i18n %}
+<a href="javascript:if(confirm('{% trans 'Delete comment' %}?')) location.href='{% url del_comment comment.id %}'"><img src="{{MEDIA_URL}}img/cross_small.gif" style="vertical-align:middle" alt="" width="16" height="16" title="{% trans 'delete' %}" /></a>

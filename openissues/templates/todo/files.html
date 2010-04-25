@@ -1,4 +1,4 @@
-{% load todo_extras %}
+{% load todo_extras i18n %}
 
 <script type="text/javascript"> 
 $(document).ready(function(){
@@ -21,14 +21,14 @@ $(document).ready(function(){
 });
 </script>
 
-<h1 style="display:inline">Файлы</h1>&nbsp;&nbsp;<a href="#" id="add_file_link" class="do">добавить файл</a><br /><br />
+<h1 style="display:inline">{% trans "Files" %}</h1>&nbsp;&nbsp;<a href="#" id="add_file_link" class="do">{% trans "add file" %}</a><br /><br />
 
 <form method="post" enctype="multipart/form-data" id="attach_form" {% if not f.errors %}style="display:none"{% endif %}>
 <div class="editformWrapper" style="margin-bottom:20px; width: 600px">
 <div class="formErrors">
-{% if f.attached_file.errors %}Не выбран файл<br />{% endif %}
+{% if f.attached_file.errors %}{% trans "File wasn't chosen" %}<br />{% endif %}
 </div>
-Файл: {{f.attached_file}} <input type="submit" value="Загрузить" />&nbsp;&nbsp;<a href="#" id="hide_link">отмена</a>
+{% trans "File" %}: {{f.attached_file}} <input type="submit" value="{% trans 'Upload' %}" />&nbsp;&nbsp;<a href="#" id="hide_link">{% trans "cancel" %}</a>
 </div>
 </form>
 

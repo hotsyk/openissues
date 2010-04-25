@@ -161,7 +161,7 @@ class Task(models.Model):
     info = models.TextField("Описание", null=True, blank=True)
     deadline = models.DateField("Срок", null=True, blank=True)
     has_deadline = models.BooleanField(default=0)
-    type = models.SmallIntegerField(choices=TASK_TYPES)
+    type = models.SmallIntegerField(choices=TASK_TYPES, default=1)
     complexity = models.IntegerField(default=0)
     gitrevision = models.CharField(max_length=255, blank=True, null=True)
     
@@ -186,7 +186,7 @@ class Task(models.Model):
                 addr = self.author.email
         
             if addr:
-                send_emails('[opentodo] '+TASK_NOTIF_SUBJECTS[notif_id], 
+                send_emails('[openissues] '+TASK_NOTIF_SUBJECTS[notif_id], 
                             msg_body, [addr])
         
 # Комментарии к задачам
@@ -213,7 +213,7 @@ class Comment(models.Model):
             if self.reply_to and self.reply_to.author.email:
                 addrs.append(self.reply_to.author.email)
             if addrs:
-                send_emails('[opentodo] Комментарий к задаче', 
+                send_emails('[openissues] Comment to the task', 
                             msg_body, uniqs(addrs))
 
 # Абстрактный класс для файлов-вложений
@@ -245,5 +245,5 @@ class TaskAttach(CommonAttach):
                 addrs.append(self.task.assigned_to.email)
             
             if addrs:
-                send_emails('[opentodo] Файл прикреплен к задаче', 
+                send_emails('[openissues] File was attached to the task', 
                             msg_body, uniqs(addrs))

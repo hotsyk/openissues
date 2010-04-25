@@ -1,34 +1,22 @@
 # -*- coding: utf-8 -*-
 
-# ! It is a good idea not to edit this and edit local_settings.py instead
-# ! (copy local_settings.py.default to local_settings.py first)
-# ! Especially if you want to update from version control system in future, because
-# ! local_settings.py is not under version control
-
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-DATABASE_ENGINE = 'mysql'        # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'ado_mssql'.
-DATABASE_NAME = 'opentodo'       # Or path to database file if using sqlite3.
-DATABASE_USER = ''               # Not used with sqlite3.
-DATABASE_PASSWORD = ''           # Not used with sqlite3.
-DATABASE_HOST = ''               # Set to empty string for localhost. Not used with sqlite3.
-DATABASE_PORT = ''               # Set to empty string for default. Not used with sqlite3.
+DATABASE_ENGINE = 'sqlite3'
+DATABASE_NAME = ':memory:'
+DATABASE_USER = ''
+DATABASE_PASSWORD = ''
+DATABASE_HOST = ''
+DATABASE_PORT = ''
 
-# Absolute path to the directory that holds media.
-# MEDIA_ROOT = '/var/www/opentodo_media'
-MEDIA_ROOT = ''
+SEND_EMAILS = False
+EMAIL_HOST = ''
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_ADDRESS_FROM = ''
 
-# URL that handles the media served from MEDIA_ROOT.
-# Note that this should have a trailing slash if it has a path component
-# MEDIA_URL = 'http://static.myhost.ru' or MEDIA_URL = 'http://myhost.ru/static/'
-MEDIA_URL = ''
 
-SEND_EMAILS = False       # make it True and edit settings bellow if you want to receive emails
-EMAIL_HOST = ''           # smtp.myhost.com
-EMAIL_HOST_USER = ''      # user123
-EMAIL_HOST_PASSWORD = ''  # qwerty
-EMAIL_ADDRESS_FROM = ''   # noreply@myhost.com
 if DEBUG:
     EMAIL_FAIL_SILENTLY = False
 else:
@@ -38,19 +26,22 @@ else:
 SECRET_KEY = 'ih^s_r3qgx!8-7aj%7^tqg#mj&zpdmchbbc=+*9=y#cm&v(ga)'
 
 LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL= '/'
+LOGIN_REDIRECT_URL = '/'
 
-import sys, os
+import sys
+import os
+
 PROJECT_DIR = os.path.dirname(__file__)
 sys.path.append(PROJECT_DIR)
 sys.path.append(PROJECT_DIR + '/apps')
 
-TEMPLATE_DIRS = (
-    PROJECT_DIR + '/templates'
-)
+MEDIA_ROOT = os.path.dirname(PROJECT_DIR)+'/static/'
+MEDIA_URL = '/static/'
 
-TIME_ZONE = 'Europe/Moscow'
-LANGUAGE_CODE = 'ru'
+TEMPLATE_DIRS = (PROJECT_DIR + '/templates', )
+
+TIME_ZONE = 'Europe/Kyiv'
+LANGUAGE_CODE = 'en'
 
 SITE_ID = 1
 USE_I18N = True
@@ -95,11 +86,6 @@ INSTALLED_APPS = (
     'todo',
 )
 
-##################################################################################
-# You can create local_settings.py to override the settings.
-# It is recomended to put all your custom settings (database, path, etc.) there
-# if you want to update from Subversion in future.
-##################################################################################
 try:
     from local_settings import *
 except ImportError:

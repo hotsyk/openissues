@@ -1,5 +1,5 @@
 {% extends "todo.html" %}
-{% load todo_extras %}
+{% load todo_extras i18n %}
 
 {% block extra_media %}
 {{f.media}}
@@ -11,11 +11,11 @@
 {% block left %}
 
 <div>
-<b>Автор</b><br />
+<b>{% trans "Author" %}</b><br />
 <span>{{project.author|username}}</span>
 </div>
 <div class="top-indent">
-<b>Дата создания</b><br />
+<b>{% trans "Creation date" %}</b><br />
 <span>{{project.created_at|format_date:"short"}}</span>
 </div>
 {% if user.is_superuser %}
@@ -35,10 +35,10 @@
 {% endif %}
 
 <div id="task-action">
-<a href="{% url tasks_list %}?project_id={{project.id}}&folder=all" class="bigger"><i>Задачи проекта</i></a>
+<a href="{% url tasks_list %}?project_id={{project.id}}&folder=all" class="bigger"><i>{% trans "Project tasks" %}</i></a>
 ({{project.tasks_count}}{%if project.tasks_active_count%}, <b>{{project.tasks_active_count}}</b>{% endif %})
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="{% url projects_list %}" class="bigger">Назад к списку проектов</a>
+<a href="{% url projects_list %}" class="bigger">{% trans "Back to the list of projects" %}</a>
 </div>
 </div>
 

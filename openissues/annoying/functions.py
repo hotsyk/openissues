@@ -8,7 +8,7 @@ def get_object_or_None(klass, *args, **kwargs):
     klass may be a Model, Manager, or QuerySet object. All other passed
     arguments and keyword arguments are used in the get() query.
 
-    Note: Like with get(), an MultipleObjectsReturned will 
+    Note: Like with get(), an MultipleObjectsReturned will
     be raised if more than one
     object is found.
     """
@@ -17,4 +17,3 @@ def get_object_or_None(klass, *args, **kwargs):
         return queryset.get(*args, **kwargs)
     except queryset.model.DoesNotExist:
         return None
-

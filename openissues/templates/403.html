@@ -1,9 +1,9 @@
 {% extends "todo.html" %}
+{% load i18n %}
 
 {% block title %}403{% endblock %}
 
 {% block content %}
-<h1>Доступ запрещен</h1><br />
-Если вы считаете, что это недоразумение, обратитесь за помощью к администратору.<br />
-<a href="{% url tasks_list %}">вернуться на заглавную страницу</a>
+<h1>{% trans "Access forbidden" %}</h1><br />
+<a href="{% url tasks_list %}">{% trans "back to main page" %}</a>
 {% endblock %}

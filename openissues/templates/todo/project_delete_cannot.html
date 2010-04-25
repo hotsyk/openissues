@@ -1,12 +1,12 @@
 {% extends "todo.html" %}
-{% load todo_extras %}
+{% load todo_extras i18n %}
 
-{% block title %}Нельзя удалить проект "{{project}}"{% endblock %}
+{% block title %}{% trans "Project" %} "{{project}}" {% trans "cannot be deleted" %}{% endblock %}
 
 {% block left %}
-<a href={% url projects_list %}>&larr; Назад к проектам</a>
+<a href={% url projects_list %}>&larr; {% trans "Back to projects" %}</a>
 {% endblock %}
 
 {% block content %}
-<big>Проект <a href="{% url project_details project.id %}">{{ project.title }}</a> содержит задачи ({{project.tasks_count}}), поэтому его нельзя удалить<big>.
+<big>{% trans "Project" %} <a href="{% url project_details project.id %}">{{ project.title }}</a> {% trans "contains tasks" %}({{project.tasks_count}}), {% trans "and cannot be deleted" %}<big>.
 {% endblock %}

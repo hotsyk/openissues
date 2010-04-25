@@ -1,4 +1,4 @@
-{% load todo_extras %}
+{% load todo_extras i18n %}
 
 <!-- FILTER -->
 <div id="hiddenModalContent" style="display:none;">
@@ -6,36 +6,36 @@
 <input type="hidden" name="filter" value="on" />
 <div id="thickbox_filter_inner" style="padding:5px">
 
-<div style="padding-bottom: 3px; padding-top: 11px">Автор:</div>
+<div style="padding-bottom: 3px; padding-top: 11px">{% trans "Author" %}:</div>
 <select id="id_folder" name="author"{% ifequal folder 'outbox' %} disabled="disabled"{% endifequal%}>
-	<option value="">Все</option>
+	<option value="">{% trans "All" %}</option>
 {% for author in users %}
 	<option value="{{author.id}}"{% ifequal folder 'outbox' %}{% ifequal author.id user.id %} selected="selected"{% endifequal %}{% else %}{% ifequal author.id params.author %} selected="selected"{% endifequal %}{% endifequal %}>{{author|username}}</option>
 {% endfor %}
 </select>
 
-<div style="padding-bottom: 3px; padding-top: 11px">Ответственный:</div>
+<div style="padding-bottom: 3px; padding-top: 11px">{% trans "Resposible" %}:</div>
 <select id="id_folder" name="assigned_to"{% ifequal folder 'inbox' %} disabled="disabled"{% endifequal%}>
-	<option value="">Все</option>
+	<option value="">{% trans "All" %}</option>
 {% for assigned_to in users %}
 	<option value="{{assigned_to.id}}"{% ifequal folder 'inbox' %}{% ifequal assigned_to.id user.id %} selected="selected"{% endifequal %}{% else %}{% ifequal assigned_to.id params.assigned_to %} selected="selected"{% endifequal %}{% endifequal %}>{{assigned_to|username}}</option>
 {% endfor %}
 </select>
 
-<div style="padding-bottom: 3px; padding-top: 11px">Статус задачи:</div>
+<div style="padding-bottom: 3px; padding-top: 11px">{% trans "Task status" %}:</div>
 <select id="id_folder" name="status">
-	<option value="">Все</option>
-	<option value="all_active"{% ifequal params.status 'all_active' %} selected="selected"{% endifequal %}>Активные</option>
+	<option value="">{% trans "All" %}</option>
+	<option value="all_active"{% ifequal params.status 'all_active' %} selected="selected"{% endifequal %}>{% trans "Active" %}</option>
 	<option value="" disabled="disabled">------------------</option>
 	{% for status in states %}<option value="{{status.id}}"{% ifequal params.status status.id %} selected="selected"{% endifequal %}>{{status.title}}</option>
 	{% endfor %}
 </select>
 
-<div style="padding-bottom: 3px; padding-top: 11px">Найти в названии:</div>
+<div style="padding-bottom: 3px; padding-top: 11px">{% trans "Search in the name" %}:</div>
 <input type="text" value="{{params.search_title}}" name="search_title" id="search_title" style="width:200px" />
 
 <div style="padding-top: 11px; width: 25%">
-<nobr><input type="submit" value="  Применить  "  /> или <a href="{% url tasks_list %}?filter=off" style="color:#3333cc;">сбросить</a></nobr>
+<nobr><input type="submit" value="  {% trans 'Apply' %}  "  /> {% trans "or" %} <a href="{% url tasks_list %}?filter=off" style="color:#3333cc;">{% trans "reset" %}</a></nobr>
 </div>
 
 </div>

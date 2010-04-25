@@ -1,22 +1,23 @@
 {% extends "todo.html" %}
+{% load i18n %}
 
-{% block title %}Проекты{% endblock %}
+{% block title %}{% trans "Projects" %}{% endblock %}
 
 {% block left %}
 {% endblock %}
 
 {% block content %}
 
-<h1 style="display: inline; padding-right: 15px">Проекты</h1>
-{% if user.is_superuser %}<a href="{% url add_project %}" class="do">добавить проект</a>{% endif %}<br /><br />
+<h1 style="display: inline; padding-right: 15px">{% trans "Projects" %}</h1>
+{% if user.is_superuser %}<a href="{% url add_project %}" class="do">{% trans "new project" %}</a>{% endif %}<br /><br />
 
 {% if projects %}
 {% for p in projects %}
 	<a href="{% url project_details p.id %}" style="font-size:130%; line-height: 175%">{{p.title}}</a>&nbsp;&nbsp;{% if p.files.count %}<a href="{% url project_details p.id %}#files"><img src="{{MEDIA_URL}}img/attach.gif" style="vertical-align:middle;border:0" /></a>{% endif %}<br />
 {% endfor %}
 {% else %}
-Тут пока пусто.<br />
-Обратитесь к администратору с просьбой включить вас в команду какого-нибудь проекта.
+{% trans "There are no projects in the list yet" %}<br />
+{% trans "Please, contact administrator to include you in desired project." %}
 {% endif %}
 
 {% endblock %}

@@ -9,16 +9,10 @@ from django import template
 
 register = template.Library()
 
-months = ('янв.', 'февр.', 'марта', 'апр.', 'мая', 'июня', 'июля', 'авг.', 
-          'сент.', 'окт.', 'нояб.', 'дек.')
+months = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 
+          'Sen', 'Oct', 'Nov', 'Dec')
 
-"""
-    Форматирует дату срока задачи.
-    Дата в прошлом, сегодня или завтра помечается красным цветом 
-    (если задача не завершена).
-    Пример: dt|format_deadline:"1"
-        где dt - переменная типа Date, 1 - статус задачи
-"""
+
 @register.filter
 def format_deadline(dt, status):
     if isinstance(dt, date):
@@ -30,11 +24,7 @@ def format_deadline(dt, status):
         dt_str = "&nbsp;"
     return mark_safe(dt_str)
 
-"""
-    Дата в формате '6 февр.' если год = текущему (иначе - в формате dd.mm.yyyy)
-    Если есть время, выводится также и оно (а если дата - 
-    сегодня, выводится только время)
-"""
+
 @register.filter
 def format_date(dt, option=""):
     dt_str = ''
@@ -63,24 +53,19 @@ def format_date(dt, option=""):
                 dt_str += ' ' + dt.strftime('%H:%M')
         else:
             if today:
-                dt_str = 'сегодня'
+                dt_str = 'today'
             if tomorrow:
-                dt_str = 'завтра'                
+                dt_str = 'tomorrow'                
     else:
         dt_str = "&nbsp;"
     return mark_safe(dt_str)
 
-"""
-    Выделяет имя файла из пути
-"""
+
 @register.filter
 def attach(path):
     import os
     return os.path.basename(path)
 
-"""
-    Размер файла в килобайтах
-"""
 @register.filter
 def size_kb(attached_file):
     try:
@@ -88,11 +73,9 @@ def size_kb(attached_file):
         import math
         return "%s Кб" % (int(math.ceil(float(size)/1024)))
     except:
-        return u'размер неизвестен'
+        return u'unknown size'
 
-"""
-    Имя пользователя: Имя Фамилия (если указаны) или логин
-"""
+
 @register.filter
 def username(user):
     try:
@@ -103,12 +86,7 @@ def username(user):
     except:
         return ""
 
-"""
-    Вычисляет высоту дополнительной (нижней) строки в списке задач в 
-    зависимости от параметра - количества задач
-    (для того чтобы высота таблицы не была меньше высоты левого меню 
-    при небольшом количестве задач)
-"""
+
 @register.filter
 def extra_td_height(tasks_count):
     height1 = 130
@@ -120,9 +98,7 @@ def extra_td_height(tasks_count):
         
     return "%s" % height
 
-"""
-    Обрезает длинные строки
-"""
+
 @register.filter
 def crop(text, count):
     out = text[:int(count)]
@@ -130,38 +106,36 @@ def crop(text, count):
         out += '&hellip;'
     return mark_safe(out)
 
-"""
-    Параметры доп. фильтра для отображения в подсказке ссылки
-"""
+
 @register.filter
 def filter_options(params, folder):
     out = ''
 
-    STATES_PLURAL = {1: u'Новые', 2: u'Принятые', 
-                     3: u'Завершенные', 4: u'Завершенные и одобренные'}
+    STATES_PLURAL = {1: u'New', 2: u'Accepted', 
+                     3: u'Closed', 4: u'Closed and approved'}
 
     author = assigned_to = status = search_title = ''
     if params.get('status', False):
         if params['status'] in (1, 2, 3, 4):
             status = STATES_PLURAL[params['status']]
         elif params['status'] == 'all_active':
-            status = u'Активные'
+            status = u'Active'
         out = u"<i>%s</i> + " % status
 
     if params.get('author', False) and not folder == 'outbox':
         author_id = params['author']
         author = User.objects.get(pk=author_id)
         author = username(author)
-        out += u"автор: <i>%s</i> + " % author
+        out += u"author: <i>%s</i> + " % author
 
     if params.get('assigned_to', False) and not folder == 'inbox':
         assigned_to_id = params['assigned_to']
         assigned_to = User.objects.get(pk=assigned_to_id)
         assigned_to = username(assigned_to)
-        out += u"ответственный: <i>%s</i> + " % assigned_to
+        out += u"responsible: <i>%s</i> + " % assigned_to
 
     if params.get('search_title', False):
-        out += u"название: <i>&laquo;%s&raquo;</i>" % params['search_title']
+        out += u"title: <i>&laquo;%s&raquo;</i>" % params['search_title']
   
     p = re.compile(' \+ $')
     out = p.sub('', out)
@@ -171,13 +145,7 @@ def filter_options(params, folder):
     return mark_safe(out)
 
 
-"""
-    Замена '<' и '>' на '&lt;' и '&gt;' в html-тегах за исключением разрешенных;
-    расстановка <br /> в конце строк за исключением текста внутри <pre>;
-    форматирование списков: "- " в начале строки заменяется на тире.
 
-    Разрешено: <a href="">, <b>, <i>, <pre> (для вставки кода)
-"""
 def sanitize_html(value):
     out = ''
     linebreaks = True

@@ -1,4 +1,4 @@
-{% load todo_extras %}Комментарий к задаче &laquo;{{t.title}}&raquo;:<br /><br />
+{% load todo_extras i18n %}{% trans "Commnet to the task" %} &laquo;{{t.title}}&raquo;:<br /><br />
 
 {{c.message|sanitize}}
 <b>{{c.author|username}}</b>, {{c.created_at|format_date}}<br /><br />

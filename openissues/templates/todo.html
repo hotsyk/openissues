@@ -1,10 +1,10 @@
-{% load todo_extras %}
+{% load todo_extras i18n %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Language" content="ru" />
-<title>{% block title %}{% endblock %} | opentodo</title>
+<title>{% block title %}{% endblock %} | openissues</title>
 
 <link rel="stylesheet" type="text/css" media="screen" href="{{MEDIA_URL}}main.css" />
 <link href="{{MEDIA_URL}}thickbox.css" type="text/css" media="all" rel="stylesheet" /> 
@@ -23,22 +23,19 @@
 
 <div id="top">
 <!-- top -->
-<div id="logo-wrapper"><a href="{% url tasks_list %}" class="logo"><span style="padding-right: 2px;">open</span><b>todo</b></a></div>
+<div id="logo-wrapper"><a href="{% url tasks_list %}" class="logo"><span style="padding-right: 2px;">open</span><b>issues</b></a></div>
 
-<div id="top-menu"><a href="{% url tasks_list %}"{% ifequal menu_active 'tasks'%}style="color:black"{% endifequal %}>Задачи</a>&nbsp;|&nbsp;<a href="{% url projects_list %}"{% ifequal menu_active 'projects'%}style="color:black"{% endifequal %}>Проекты</a>
+<div id="top-menu"><a href="{% url tasks_list %}"{% ifequal menu_active 'tasks'%}style="color:black"{% endifequal %}>{% trans "Tasks" %}</a>&nbsp;|&nbsp;<a href="{% url projects_list %}"{% ifequal menu_active 'projects'%}style="color:black"{% endifequal %}>{% trans "Projects" %}</a>
 {% if user.is_superuser %}
-|&nbsp;<a href="/admin/" style="color:#aa0033" target="_blank">Администрирование</a>
+|&nbsp;<a href="/admin/" style="color:#aa0033" target="_blank">{% trans "Administration" %}</a>
 {% endif %}
-{% ifequal HOST 'demo.opentodo.ru' %}
-|&nbsp;<a href="http://code.google.com/p/opentodo/" target="_blank" style="color:#aa0033">Страница проекта на Google Code</a>
-{% endifequal %}
 </div>
 
 <div id="top-right">
 {% if user.is_authenticated %}
-	{{user|username}} ({% ifequal HOST 'demo.opentodo.ru' %}<a href="http://code.google.com/p/opentodo">{% else %}<a href="{% url django.contrib.auth.views.logout_then_login %}">{% endifequal %}Выйти</a>)
+	{{user|username}} <a href="{% url django.contrib.auth.views.logout_then_login %}">{% trans "Logout" %}</a>
 {% else %}
-	Вы не авторизованы
+	{% trans "You aren't signed in" %}
 {% endif %}
 </div>
 <!-- /top -->

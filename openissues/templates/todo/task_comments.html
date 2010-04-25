@@ -1,4 +1,4 @@
-{% load todo_extras %}
+{% load todo_extras i18n %}
 
 <script type="text/javascript">
 
@@ -24,7 +24,7 @@ function reply_to_new(comment_id) {
 	var text = '';
 	text = $(author).text() + ': ';
 
-	extra_text = '<a href="javascript:cancel_comment();" class="cancel_comment" style="color: #555;">отмена</a><div style="display:inline; padding-left: 200px">для цитат используйте символ <big><b>&gt;</b></big> в начале строки</div>';
+	extra_text = '<a href="javascript:cancel_comment();" class="cancel_comment" style="color: #555;">{% trans "cancel" %}</a>';
 
 	$('.reply_to').remove();
 	$(comment_block).append('<div class="reply_to" style="margin-left:10px">' + reply_form.html() + '</div>');
@@ -39,7 +39,7 @@ function reply_to_new(comment_id) {
 }
 </script>
 
-<h1 style="padding-top:10px">Комментарии</h1>
+<h1 style="padding-top:10px">{% trans "Comments" %}</h1>
 {% if task.comments.all %}
 <div id="comment-container">
 {% for comment in task.comments.all %}
@@ -48,7 +48,7 @@ function reply_to_new(comment_id) {
 	<div class="comment-extra">
 		<span id="id_author_{{comment.id}}">{{comment.author|username}}</span>,
 		<span id="id_dt_{{comment.id}}">{{comment.created_at|format_date}}</span>
-		<span style="color:#777">&nbsp;(<a href="javascript:reply_to_new({{comment.id}});" style="font-size: 10pt; color: #5555aa;" class="comment_reply">ответить</a>)</span>
+		<span style="color:#777">&nbsp;(<a href="javascript:reply_to_new({{comment.id}});" style="font-size: 10pt; color: #5555aa;" class="comment_reply">{% trans "reply" %}</a>)</span>
 	{% ifequal comment.author user %}
 		{% include "todo/comment_actions.html" %}
 	{% else %}
@@ -62,7 +62,7 @@ function reply_to_new(comment_id) {
 </div>
 {% endif %}
 
-<a href="#comment_form" style="font-size:130%; color:#999; text-decoration:none; border-bottom:1px dashed #999; display: none" id="id_show_comment_form">Написать комментарий</a>
+<a href="#comment_form" style="font-size:130%; color:#999; text-decoration:none; border-bottom:1px dashed #999; display: none" id="id_show_comment_form">{% trans "New comment" %}</a>
 <a name="comment_form"></a>
 <div class="reply_all">
 	<div class="editformWrapper" style="width:700px; margin-top:10px; padding-top:7px">
@@ -70,7 +70,7 @@ function reply_to_new(comment_id) {
 		<form method="post" action="{% url add_comment task.id %}">
 			<input type="hidden" name="reply_to" value="" />
 			<textarea name="message" rows="7" cols="30" style="width:700px" id="id_msg_input"></textarea><br />
-			<input type="submit" value="Добавить комментарий" class="button" />
+			<input type="submit" value="{% trans 'Add comment' %}" class="button" />
 			<span style="color: #aaa; font-size: 10pt"><!-- text here, use in jquery --></span>
 		</form>
 	</div>

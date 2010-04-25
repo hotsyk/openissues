@@ -1,4 +1,4 @@
-{% load todo_extras %}
+{% load todo_extras i18n %}
 <script type="text/javascript"> 
 $(document).ready(function(){
 	load_users();
@@ -41,34 +41,34 @@ function load_users() {
 </script>
 
 <div class="formErrors">
-	{% if form.project.errors %}Не выбран проект<br />{% endif %}
-	{% if form.title.errors %}Не введена задача<br />{% endif %}
-	{% if form.deadline.errors %}Формат даты в поле Срок должен быть yyyy-mm-dd<br />{% endif %}
+	{% if form.project.errors %}{% trans "Project wasn't chosen" %}<br />{% endif %}
+	{% if form.title.errors %}{% trans "Task isn't entered" %}<br />{% endif %}
+	{% if form.deadline.errors %}{% trans "Date format for the deadline should be" %} yyyy-mm-dd<br />{% endif %}
 </div>
 
 <div class="editformWrapper" style="width:780px;">
 <form method="post" id="editform">
 	<table id="editform_table" cellspacing="0">
 	<tr>
-		<th><label for="id_project"><span class="red">*</span> Проект:</label></th>
+		<th><label for="id_project"><span class="red">*</span> {% trans "Project" %}:</label></th>
 		<td>{{form.project}}</td>
 	</tr>
 	<tr>
-		<th><label for="id_title"><span class="red">*</span> Задача:</label></th>
+		<th><label for="id_title"><span class="red">*</span> {% trans "Task" %}:</label></th>
 		<td>{{form.title}}</td>
 	</tr>
 	<tr>
-		<th style="padding-top: 30px"><label for="id_info">Описание:</label></th>
+		<th style="padding-top: 30px"><label for="id_info">{% trans "Description" %}:</label></th>
 		<td>
 		{% include "todo/wysiwyg.html" %}
 		{{form.info}}</td>
 	</tr>
 	<tr>
-		<th><label for="id_deadline">Срок:</label></th>
+		<th><label for="id_deadline">{% trans "Deadline" %}:</label></th>
 		<td>{{form.deadline}}</td>
 	</tr>
 	<tr>
-		<th><label for="id_assigned_to">Ответственный:</label></th>
+		<th><label for="id_assigned_to">{% trans "Responsible" %}:</label></th>
 		<td>
 		<select name="assigned_to" id="id_assigned_to"> 
 		<option value="" selected="selected">---------</option>
@@ -80,7 +80,7 @@ function load_users() {
 	</tr>
 	<tr>
 		<th>&nbsp;</th>
-		<td style="padding-top:15px"><input type="submit" value="Сохранить задачу" class="button" /><a href="{% if add %}{% url tasks_list %}{% else %}{% url task_details task.id %}{% endif %}">отмена</a></td>
+		<td style="padding-top:15px"><input type="submit" value="{% trans 'Save task' %}" class="button" /><a href="{% if add %}{% url tasks_list %}{% else %}{% url task_details task.id %}{% endif %}">{% trans "cancel" %}</a></td>
 	</tr>
 	</table>
 </form>
