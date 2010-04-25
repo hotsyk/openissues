@@ -55,7 +55,7 @@ table#editform_table th {
 	height: 200px;
 }
 #editform #id_title {
-	width: 600px;
+	width: 600
 	font-size:1.7em;
 }
 
@@ -80,4 +80,17 @@ input.button {
 }
 #attach_form input#id_title {
 	width: 300px;
+}
+ul.userlist,  ul.userlist li{
+	list-style: none;
+	float:left;
+	padding-right:5px;
+}
+
+blockquote {
+	display: block;
+	padding-left: 20px;
+	border-left: solid #333 2px;
+	font-style: italic;
+	
 }

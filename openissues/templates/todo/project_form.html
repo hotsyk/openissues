@@ -13,6 +13,7 @@ $(document).ready(function(){
 
 <div class="formErrors">
 	{% if form.title.errors %}{% trans "Project name wasn't entered" %}<br />{% endif %}
+	{% if form.errors %} {{ form.errors }} {% endif %}
 </div>
 
 <div class="editformWrapper" style="width:800px">

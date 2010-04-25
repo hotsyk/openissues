@@ -14,18 +14,23 @@ class OpentodoModelForm(ModelForm):
         css = {'all': ('forms.css', )}
         js = ('jquery.formvalidation.1.1.5.js',)
 
+class CheckboxSelectMultiple(forms.widgets.CheckboxSelectMultiple):
+    def render(self, name, value, attrs=None, choices=()):
+        return mark_safe(super(CheckboxSelectMultiple, self).render(name, value, 
+                    attrs, choices).replace('<ul>', '<ul class="userlist">'))
 
 class ProjectForm(OpentodoModelForm):
+    title = forms.CharField()
+    users = forms.MultipleChoiceField(widget=CheckboxSelectMultiple())
+       
     def __init__(self, *args, **kwargs):
         super(ProjectForm, self).__init__(*args, **kwargs)
         user_choices = []
         user_list = User.objects.order_by('first_name', 'last_name')
         for item in user_list:
-            user_choices.append((item.id, username(item)))
+            user_choices.append([item.pk, username(item)])
         self.fields['users'].choices = user_choices
-
-    title = forms.CharField()
-
+ 
     class Meta:
         model = Project
         fields = ('title', 'info', 'users')
@@ -36,17 +41,16 @@ class ComplexityRadioFieldRenderer(forms.widgets.RadioFieldRenderer):
                 % force_unicode(w) for w in self]))    
 
 class TaskForm(OpentodoModelForm):
-    def __init__(self, user, *args, **kwargs):
-        super(TaskForm, self).__init__(*args, **kwargs)
-        self.fields['project'].queryset = Project.objects.available_for(user)
-
     title = forms.CharField()
     complexity = forms.ChoiceField(widget=forms.RadioSelect(\
                                    renderer=ComplexityRadioFieldRenderer), 
-                                   choices=[[0,'0'], [1,'1'], 
-                                            [2,'2'], [3,'3'], 
-                                            [4,'4'], ])
-    
+                                   choices=[[0,'0'], [1,'1'], [2,'2'], [3,'3'], 
+                                            [4,'4'], ]) 
+        
+    def __init__(self, user, *args, **kwargs):
+        super(TaskForm, self).__init__(*args, **kwargs)
+        self.fields['project'].queryset = Project.objects.available_for(user)
+   
     class Meta:
         model = Task
         fields = ('project', 'title', 'info', 'deadline', 'complexity', 
