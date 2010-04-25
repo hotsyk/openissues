@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 from django.forms import ModelForm
 from django import forms
-from todo.models import *
+from django.utils.safestring import mark_safe
+from django.utils.encoding import StrAndUnicode, force_unicode
 from django.contrib.auth.models import User
+
+from todo.models import *
 from todo.templatetags.todo_extras import username
 
 
@@ -27,6 +30,10 @@ class ProjectForm(OpentodoModelForm):
         model = Project
         fields = ('title', 'info', 'users')
 
+class ComplexityRadioFieldRenderer(forms.widgets.RadioFieldRenderer):
+    def render(self):
+        return mark_safe(u'&nbsp;'.join([u'%s'
+                % force_unicode(w) for w in self]))    
 
 class TaskForm(OpentodoModelForm):
     def __init__(self, user, *args, **kwargs):
@@ -34,10 +41,16 @@ class TaskForm(OpentodoModelForm):
         self.fields['project'].queryset = Project.objects.available_for(user)
 
     title = forms.CharField()
-
+    complexity = forms.ChoiceField(widget=forms.RadioSelect(\
+                                   renderer=ComplexityRadioFieldRenderer), 
+                                   choices=[[0,'0'], [1,'1'], 
+                                            [2,'2'], [3,'3'], 
+                                            [4,'4'], ])
+    
     class Meta:
         model = Task
-        fields = ('project', 'title', 'info', 'deadline')
+        fields = ('project', 'title', 'info', 'deadline', 'complexity', 
+                 )
 
     class Media:
         css = {'all': ('ui.datepicker.css', )}

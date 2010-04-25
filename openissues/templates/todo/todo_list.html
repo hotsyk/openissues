@@ -93,6 +93,7 @@ $(document).ready(function(){
 <table class="common" style="clear:both;" cellspacing="0" cellpadding="0" width="100%">
 	<tr>
 		<th class="left{% ifequal order 'task'%} active{% endifequal %}" width="100%"><a href="{% url tasks_list %}?order=task&dir={% ifequal order 'task'%}{% ifequal dir 'asc'%}desc{% else %}asc{% endifequal%}{% else %}asc{% endifequal%}">{% trans "Task" %}{% ifequal order 'task'%}{% ifequal dir 'asc'%}&uarr;{% else %}&darr;{% endifequal%}{% endifequal%}</a></th>
+        <th {% ifequal order 'complexity'%} class="active"{% endifequal %}><a href="{% url tasks_list %}?order=complexity&dir={% ifequal order 'complexity'%}{% ifequal dir 'asc'%}desc{% else %}asc{% endifequal%}{% else %}asc{% endifequal%}">{% trans "Complexity" %}{% ifequal order 'complexity'%}{% ifequal dir 'asc'%}&uarr;{% else %}&darr;{% endifequal%}{% endifequal%}</a></th>
 
 		{% if not project %}
 		<th{% ifequal order 'project'%} class="active"{% endifequal %}><a href="{% url tasks_list %}?order=project&dir={% ifequal order 'project'%}{% ifequal dir 'asc'%}desc{% else %}asc{% endifequal%}{% else %}asc{% endifequal%}">{% trans "Project" %}{% ifequal order 'project'%}{% ifequal dir 'asc'%}&uarr;{% else %}&darr;{% endifequal%}{% endifequal%}</a></th>
@@ -113,6 +114,7 @@ $(document).ready(function(){
 	<tr{% ifequal t.status.id 3 %} class="grey"{% endifequal %}{% ifequal t.status.id 4 %} class="grey"{% endifequal %}>
 
 		<td class="left"><a href="{% url task_details t.id %}" class="todolist">{{t.title}}</a>&nbsp;{% if t.comments.count %}<a href="{% url task_details t.id %}#comments" class="comment">({{ t.comments.count }})</a>{% endif %}&nbsp;&nbsp;{% if t.files.count %}<a href="{% url task_details t.id %}#files"><img src="{{MEDIA_URL}}img/attach.gif" style="vertical-align:middle;border:0" /></a>{% endif %}</td>
+		<td><nobr>{{t.complexity}}</nobr></td>
 		{% if not project %}<td><nobr>{{t.project.title}}</nobr></td>{% endif %}
 		<td><nobr>{{t.author|username}}</nobr></td>
 		<td style="text-align:right">{{t.created_at|format_date:"short"}}</td>
@@ -125,7 +127,7 @@ $(document).ready(function(){
 {% else %}
 	<tr><td class="left center" colspan="7" height="{{tasks.count|extra_td_height}}"><br /><br /><i>{% trans "There are no tasks for current conditions" %}</i></td></tr>
 {% endif %}
-	<tr><td colspan="7" class="bottom">&nbsp;</td></tr>
+	<tr><td colspan="8" class="bottom">&nbsp;</td></tr>
 </table>
 </div>
 {% endblock %}

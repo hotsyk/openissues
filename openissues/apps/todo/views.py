@@ -197,6 +197,11 @@ def list(request, state=0):
         else:
             tasks = tasks.order_by('author__first_name',\
                                     'author__last_name', '-created_at')
+    elif order == 'complexity':
+        if direct == 'desc':
+            tasks = tasks.order_by('-complexity', '-created_at')
+        else:
+            tasks = tasks.order_by('complexity', '-created_at')            
     else:
         order = 'created_at'
         direct = 'desc'

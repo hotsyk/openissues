@@ -44,6 +44,7 @@ function load_users() {
 	{% if form.project.errors %}{% trans "Project wasn't chosen" %}<br />{% endif %}
 	{% if form.title.errors %}{% trans "Task isn't entered" %}<br />{% endif %}
 	{% if form.deadline.errors %}{% trans "Date format for the deadline should be" %} yyyy-mm-dd<br />{% endif %}
+	{% if form.complexity.errors %}{% trans "Enter valid complexity" %}<br />{% endif %}
 </div>
 
 <div class="editformWrapper" style="width:780px;">
@@ -61,6 +62,11 @@ function load_users() {
         <th><label for="id_deadline">{% trans "Deadline" %}:</label></th>
         <td>{{form.deadline}}</td>
     </tr>
+    <tr>
+        <th><label for="id_deadline">{% trans "Complexity" %}:</label></th>
+        <td> {{ form.complexity }} 
+        </td>
+    </tr>	
     <tr>
         <th><label for="id_assigned_to">{% trans "Responsible" %}:</label></th>
         <td>
@@ -80,7 +86,7 @@ function load_users() {
 	</tr>
     <tr>
        <th style="padding-top: 30px">{% trans "Description preview" %}:</th>
-       <td><div class="wmd-preview"></div></td>
+       <td><div class="wmd-preview">{% trans "Nothing here yet" %}</div></td>
      </tr>	
 	
 	<tr>

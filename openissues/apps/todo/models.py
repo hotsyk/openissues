@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 #------------------------------------------------------------
+# openissues (C) 2010 Volodymyr Hotsyk <openissues@hotsyk.com>
 # opentodo (c) 2009 Mikhail Grigoriev <mgrigoriev@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License
@@ -14,14 +15,11 @@ from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
 
-
-# Для уведомлений по e-mail
 from django.template.loader import get_template
 from django.template import Context
 from django.conf import settings
 from django.core.mail import EmailMessage
 
-# Тема письма при изменении статуса задачи
 TASK_NOTIF_SUBJECTS = {
     1: 'New task',
     2: 'Task was accepted',
@@ -30,13 +28,9 @@ TASK_NOTIF_SUBJECTS = {
     5: 'Task was reopened'
 }
 
-#---------------------------------------------------
-
-# Удаляет дублирующие значения из списка
 def uniqs(seq):
     return dict(zip(seq, [None,]*len(seq))).keys()
 
-# Отправка почты - обертка для EmailMessage
 def send_emails(subject, message, recipient_list):
     msg = EmailMessage(subject, message, settings.EMAIL_ADDRESS_FROM, 
                        recipient_list)
@@ -62,15 +56,8 @@ def users_in_projects(projects):
                                                        'last_name')
     return users
 
-#---------------------------------------------------
-# Models
-
-
-# Projects
-
 
 class ProjectManager(models.Manager):
-    # Проекты, доступные для пользователя
     def available_for(self, user):
         if user.is_superuser:
             return self.all().order_by('title')
@@ -98,7 +85,6 @@ class Project(models.Model):
     tasks_count = property(_get_tasks_count)
     tasks_active_count = property(_get_tasks_count_active)
 
-    # Проект доступен для пользователя
     def is_avail(self, user):
         if user.is_superuser:
             return True
@@ -108,11 +94,9 @@ class Project(models.Model):
         except Project.DoesNotExist:
             return False
 
-    # Пользователи, имеющие доступ к проекту
     def allowed_users(self):
         pass
 
-    # При добавлении проекта добавляем автора в команду
     def save(self):
         is_new = self._get_pk_val() is None
         super(Project, self).save()
@@ -120,8 +104,8 @@ class Project(models.Model):
             self.users.add(self.author)
 
     class Meta:
-        verbose_name = "проект"
-        verbose_name_plural = "проекты"
+        verbose_name = "project"
+        verbose_name_plural = "projects"
 
 
 class ProjectEstimate(models.Model):
@@ -131,13 +115,12 @@ class ProjectEstimate(models.Model):
     complexity = models.IntegerField(default=0)
     
     
-# Статусы задач
 class Status(models.Model):
-    title = models.CharField("Статус", max_length=50)
+    title = models.CharField("Status", max_length=50)
     def __unicode__(self):
         return self.title
 
-# Задачи
+
 class Task(models.Model):
     TASK_TYPES = (
                   (1, 'Task'),

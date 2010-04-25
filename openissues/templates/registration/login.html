@@ -52,24 +52,20 @@ function setFocus() {
 <div id="content">
 <table cellspacing=0 width=400 align=center><tr><td style="border: 5px solid #ddd; padding-left: 31; padding-bottom: 30; padding-top: 22;background-color: #fff"> 
 	{% if not user.is_authenticated %}
-		{% if form.has_errors %}
-		<div class="error">Неправильный логин или пароль</div>
+		{% if form.errors %}
+		  <div class="error">{% trans "Incorrect username or password. Or both." %}</div>
 		{% endif %}
 		<form method="post" action="." id="id_loginform">
 		<table>
-		<tr><td></td><td class="logo"><span style="padding-right: 2px;">open</span><b>todo</b></td></tr>
-		<tr><td><label for="id_username">Логин:</label></td><td>{{ form.username }}</td></tr>
-		<tr><td><label for="id_password">Пароль:&nbsp;</label></td><td>{{ form.password }}</td></tr>
-		<tr><td>&nbsp;</td><td><input type="submit" value="Войти" id="id_submit" /></td></tr>
-		{% ifequal HOST 'demo.opentodo.ru' %}
-			<tr><td>&nbsp;</td>
-			<td style="padding-top:10px;">Логин / пароль: <i><b><span style="color:green">demo / demo</span></b></i></td></tr>
-		{% endifequal %}
+		<tr><td></td><td class="logo"><span style="padding-right: 2px;">open</span><b>issues</b></td></tr>
+		<tr><td><label for="id_username">{% trans "Login" %}:</label></td><td>{{ form.username }}</td></tr>
+		<tr><td><label for="id_password">{% trans "Password" %}:&nbsp;</label></td><td>{{ form.password }}</td></tr>
+		<tr><td>&nbsp;</td><td><input type="submit" value="{% trans 'Sign in' %}" id="id_submit" /></td></tr>
 		</table>
 		<input type="hidden" name="next" value="{{ next }}" />
 		</form>
 	{% else %}
-		Вы вошли как {{ user|username}})
+		{% trans "You've authorized as" %} {{ user|username}})
 	{% endif %}
 </td></tr></table>
 </div>
