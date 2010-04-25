@@ -22,14 +22,18 @@ $(document).ready(function(){
 		<th><label for="id_title"><span class="red">*</span> {% trans "Project" %}:</label></th>
 		<td>{{form.title}}</td>
 	</tr>
+    <tr>
+        <th style="width:180px"><span class="red">*</span> <label for="id_users">{% trans "Users" %}:</label><br /><span style="color:#999">{% trans "(Super users have access even if they aren't added to the project)" %}</span></th>
+        <td>{{form.users}}</td>
+    </tr>	
 	<tr>
 		<th style="padding-top: 30px"><label for="id_info">{% trans "Description" %}:</label></th>
 		<td>{% include "todo/wysiwyg.html" %} {{form.info}}</td>
 	</tr>
 	<tr>
-		<th style="width:180px"><span class="red">*</span> <label for="id_users">{% trans "Users" %}:</label><br /><span style="color:#999">{% trans "(Super users have access even if they aren't added to the project)" %}</span></th>
-		<td>{{form.users}}</td>
-	</tr>
+	   <th style="padding-top: 30px">{% trans "Description preview" %}:</th>
+	   <td><div class="wmd-preview"></div></td>
+	 </tr>
 	<tr>
 		<th></th>
 		<td style="padding-top:10px"><input type="submit" value="{% trans 'Save' %}" class="button" /><a href="{% if add %}{% url projects_list %}{% else %}{% url project_details project.id %}{% endif %}">{% trans "cancel" %}</a></td>

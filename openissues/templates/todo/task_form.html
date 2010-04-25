@@ -1,4 +1,4 @@
-{% load todo_extras i18n %}
+{% load todo_extras i18n markup %}
 <script type="text/javascript"> 
 $(document).ready(function(){
 	load_users();
@@ -57,27 +57,32 @@ function load_users() {
 		<th><label for="id_title"><span class="red">*</span> {% trans "Task" %}:</label></th>
 		<td>{{form.title}}</td>
 	</tr>
+    <tr>
+        <th><label for="id_deadline">{% trans "Deadline" %}:</label></th>
+        <td>{{form.deadline}}</td>
+    </tr>
+    <tr>
+        <th><label for="id_assigned_to">{% trans "Responsible" %}:</label></th>
+        <td>
+        <select name="assigned_to" id="id_assigned_to"> 
+        <option value="" selected="selected">---------</option>
+    {% for u in users %}
+        <option value="{{u.id}}"{% if add %}{% ifequal u.id user.id %} selected="selected"{% endifequal %}{% else %}{% ifequal u.id task.assigned_to.id %} selected="selected"{% endifequal %}{% endif %}>{{u|username}}</option> 
+    {% endfor %}
+        </select><img src="{{MEDIA_URL}}img/ajax-loader.gif" id="loader" style="padding-left:5px; display:none" />
+        </td>
+    </tr>	
 	<tr>
 		<th style="padding-top: 30px"><label for="id_info">{% trans "Description" %}:</label></th>
 		<td>
 		{% include "todo/wysiwyg.html" %}
 		{{form.info}}</td>
 	</tr>
-	<tr>
-		<th><label for="id_deadline">{% trans "Deadline" %}:</label></th>
-		<td>{{form.deadline}}</td>
-	</tr>
-	<tr>
-		<th><label for="id_assigned_to">{% trans "Responsible" %}:</label></th>
-		<td>
-		<select name="assigned_to" id="id_assigned_to"> 
-		<option value="" selected="selected">---------</option>
-	{% for u in users %}
-		<option value="{{u.id}}"{% if add %}{% ifequal u.id user.id %} selected="selected"{% endifequal %}{% else %}{% ifequal u.id task.assigned_to.id %} selected="selected"{% endifequal %}{% endif %}>{{u|username}}</option> 
-	{% endfor %}
-		</select><img src="{{MEDIA_URL}}img/ajax-loader.gif" id="loader" style="padding-left:5px; display:none" />
-		</td>
-	</tr>
+    <tr>
+       <th style="padding-top: 30px">{% trans "Description preview" %}:</th>
+       <td><div class="wmd-preview"></div></td>
+     </tr>	
+	
 	<tr>
 		<th>&nbsp;</th>
 		<td style="padding-top:15px"><input type="submit" value="{% trans 'Save task' %}" class="button" /><a href="{% if add %}{% url tasks_list %}{% else %}{% url task_details task.id %}{% endif %}">{% trans "cancel" %}</a></td>

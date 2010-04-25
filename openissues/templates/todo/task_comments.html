@@ -1,4 +1,4 @@
-{% load todo_extras i18n %}
+{% load todo_extras i18n markup %}
 
 <script type="text/javascript">
 
@@ -44,7 +44,7 @@ function reply_to_new(comment_id) {
 <div id="comment-container">
 {% for comment in task.comments.all %}
 	<div class="comment" id="id_comment_{{comment.id}}">	
-	<div id="id_message_{{comment.id}}">{{comment.message|sanitize}}</div>
+	<div id="id_message_{{comment.id}}">{{comment.message|markdown}}</div>
 	<div class="comment-extra">
 		<span id="id_author_{{comment.id}}">{{comment.author|username}}</span>,
 		<span id="id_dt_{{comment.id}}">{{comment.created_at|format_date}}</span>

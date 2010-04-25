@@ -56,7 +56,7 @@ table#editform_table th {
 }
 #editform #id_title {
 	width: 600px;
-	height: 35px;
+	font-size:1.7em;
 }
 
 input.button {

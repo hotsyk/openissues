@@ -21,7 +21,7 @@ class ProjectForm(OpentodoModelForm):
             user_choices.append((item.id, username(item)))
         self.fields['users'].choices = user_choices
 
-    title = forms.CharField(widget=forms.Textarea)
+    title = forms.CharField()
 
     class Meta:
         model = Project
@@ -33,7 +33,7 @@ class TaskForm(OpentodoModelForm):
         super(TaskForm, self).__init__(*args, **kwargs)
         self.fields['project'].queryset = Project.objects.available_for(user)
 
-    title = forms.CharField(widget=forms.Textarea)
+    title = forms.CharField()
 
     class Meta:
         model = Task

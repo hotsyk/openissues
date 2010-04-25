@@ -1,5 +1,5 @@
 {% extends "todo.html" %}
-{% load i18n %}
+{% load i18n markup %}
 {% block extra_media %}{{form.media}}{% endblock %}
 
 {% block title %}{% if add %}{% trans "New project" %}{% else %}{% trans "Edit of the project" %} "{{project}}"{% endif %}{% endblock %}

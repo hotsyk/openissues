@@ -1,5 +1,5 @@
 {% extends "todo.html" %}
-{% load todo_extras i18n %}
+{% load todo_extras i18n markup %}
 
 {% block extra_media %}
 {{f.media}}
@@ -28,7 +28,7 @@
 <div id="task-container" style="padding-bottom:0">
 <h2 id="task-title">{{project.title}}</h2>
 {% if project.info %}
-<div id="task-info">{{project.info|sanitize}}</div>
+<div id="task-info">{{project.info|markdown}}</div>
 <div style="color:#000; padding: 5px 0">
 <b>Участники:</b> {% for member in project.users.all %}{{member|username}}{% if not forloop.last %}, {% endif %}{% endfor %}
 </div>

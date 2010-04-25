@@ -23,11 +23,11 @@ from django.core.mail import EmailMessage
 
 # Тема письма при изменении статуса задачи
 TASK_NOTIF_SUBJECTS = {
-    1: 'Новая задача',
-    2: 'Задача принята на выполнение',
-    3: 'Задача выполнена',
-    4: 'Результат выполнения задачи одобрен',
-    5: 'Задача открыта заново'
+    1: 'New task',
+    2: 'Task was accepted',
+    3: 'Task marked as done',
+    4: 'Result of task has been approved',
+    5: 'Task was reopened'
 }
 
 #---------------------------------------------------
@@ -78,13 +78,13 @@ class ProjectManager(models.Manager):
             return user.avail_projects.all().order_by('title')     
 
 class Project(models.Model):
-    title = models.CharField("Проект", max_length=255)
-    info = models.TextField("Описание", null=True, blank=True)
-    created_at = models.DateTimeField("Дата добавления", auto_now_add=True)
+    title = models.CharField("Project", max_length=255)
+    info = models.TextField("Description", null=True, blank=True)
+    created_at = models.DateTimeField("Date of adding", auto_now_add=True)
     author = models.ForeignKey(User, null=True, db_column='author', 
-                               related_name="projects", verbose_name="Автор")
+                               related_name="projects", verbose_name="Author")
     users = models.ManyToManyField(User, blank=True, null=True, 
-                                   verbose_name="Команда", 
+                                   verbose_name="Team", 
                                    related_name="avail_projects")
     
     objects = ProjectManager()
@@ -146,20 +146,20 @@ class Task(models.Model):
                   (4, 'Technical debt'),
                   (5, 'Issue'),
                   )
-    project = models.ForeignKey(Project, verbose_name="Проект", 
+    project = models.ForeignKey(Project, verbose_name="Project", 
                                 related_name="related_tasks")
     status = models.ForeignKey(Status, default=1, 
-                               verbose_name="Статус")
+                               verbose_name="Status")
     author = models.ForeignKey(User, null=True, db_column='author', 
                                related_name="tasks", verbose_name="Автор")
     assigned_to = models.ForeignKey(User, null=True, db_column='assigned_to', 
                                     related_name="assigned_tasks", 
                                     verbose_name="Ответственный")
-    created_at = models.DateTimeField("Дата добавления", 
+    created_at = models.DateTimeField("Creation date", 
                                       auto_now_add=True)
-    title =  models.CharField("Задача", max_length=255)
-    info = models.TextField("Описание", null=True, blank=True)
-    deadline = models.DateField("Срок", null=True, blank=True)
+    title =  models.CharField("Task", max_length=255)
+    info = models.TextField("Description", null=True, blank=True)
+    deadline = models.DateField("Deadline", null=True, blank=True)
     has_deadline = models.BooleanField(default=0)
     type = models.SmallIntegerField(choices=TASK_TYPES, default=1)
     complexity = models.IntegerField(default=0)

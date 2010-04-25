@@ -1,6 +1,21 @@
 <div style="padding-bottom:2px; font-size:9pt; background-color: #fff; width: 250px; padding-left: 10px">
-<a href="javascript:;" onclick="return insert_text('b');" style="color:#999; text-decoration:none"><b>жирный</b></a>&nbsp;&nbsp;&nbsp;
-<a href="javascript:;" onclick="return insert_text('i');" style="color:#777; text-decoration:none"><i>курсив</i></a>&nbsp;&nbsp;&nbsp;
-<a href="javascript:;" onclick="return insert_text('pre');" style="color:#555; text-decoration:none; font-family: Courier New">код</a>&nbsp;&nbsp;&nbsp;
-<a href="javascript:;" onclick="insert_link(); return false;" style="color:#6666cc; text-decoration:none">ссылка</a>
+ <script type="text/javascript">
+        // to set WMD's options programatically, define a "wmd_options" object with whatever settings
+        // you want to override.  Here are the defaults:
+        wmd_options = {
+            // format sent to the server.  Use "Markdown" to return the markdown source.
+            output: "Markdown",
+
+            // line wrapping length for lists, blockquotes, etc.
+            lineLength: 40,
+
+            // toolbar buttons.  Undo and redo get appended automatically.
+            buttons: "bold italic | link blockquote code image | ol ul heading hr",
+
+            // option to automatically add WMD to the first textarea found.  See apiExample.html for usage.
+            autostart: true
+        };
+    </script>
+<script type="text/javascript" src="{{ MEDIA_URL }}wmd/wmd.js""></script>
+
 </div>
